@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f7fb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="description" content="Low-data MTR Adult Octopus fare audit with interactive station map.">
+  <title>MTR FARE｜低數據車費查詢</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brandmark" aria-hidden="true"><i></i><b></b></div>
+      <div class="brandcopy">
+        <h1 data-i18n="title">MTR FARE</h1>
+        <div class="mode" data-i18n="mode">低數據模式</div>
+      </div>
+    </div>
+    <button id="langBtn" class="langbtn" aria-label="Language">EN</button>
+  </header>
+
+  <p class="hero-sub" data-i18n="subtitle">成人八達通車費・本機查價</p>
+
+  <div class="picker-labels"><span data-i18n="from">起點</span><span data-i18n="to">終點</span></div>
+  <section class="pickers" aria-label="Station selectors">
+    <div class="select-card"><select id="fromStation" aria-label="From station"></select></div>
+    <button id="swapBtn" class="swap" title="Swap" aria-label="Swap">⇄</button>
+    <div class="select-card to"><select id="toStation" aria-label="To station"></select></div>
+  </section>
+
+  <button id="calcBtn" class="calc" data-i18n="calculate">計算車費</button>
+
+  <section id="result" class="result hidden" aria-live="polite">
+    <div class="result-grid">
+      <div><div id="fareValue" class="fare">$0.0</div></div>
+      <div>
+        <div id="routeText" class="route"></div>
+        <div id="routeSub" class="route-sub"></div>
+        <div id="resultBadge" class="badge"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="usage" aria-label="Data usage">
+    <span id="usageSearch" class="a">本次查價 0 B</span><span class="dot">•</span>
+    <span id="usagePage" class="b">本頁 0 B</span><span class="dot">•</span>
+    <span id="usageDb" class="c">車費庫 0 B</span>
+  </div>
+  <p id="statusText" class="note">正在載入已儲存的官方車費…</p>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2 data-i18n="mapTitle">互動港鐵路綫圖</h2>
+        <p data-i18n="mapDesc">點一下設起點，再點一下設終點。可放大、縮小及拖動畫面。</p>
+      </div>
+      <a id="officialPdf" class="pdf-link" href="https://www.mtr.com.hk/archive/en/services/routemap.pdf" target="_blank" rel="noopener">官方 PDF ↗</a>
+    </div>
+    <div class="map-card">
+      <div class="map-toolbar">
+        <div class="map-help" data-i18n="mapNote">互動圖按官方路綫與車站製作；右上按鈕可開啟港鐵官方 PDF。</div>
+        <div class="map-tools">
+          <button id="zoomOut" aria-label="Zoom out">−</button>
+          <button id="zoomIn" aria-label="Zoom in">＋</button>
+          <button id="zoomFit" data-i18n="fit">合適大小</button>
+        </div>
+      </div>
+      <div class="map-scroll"><svg id="railMap" viewBox="0 0 1600 1050" aria-label="Interactive MTR map"></svg></div>
+      <div id="mapLegend" class="legend"></div>
+    </div>
+  </section>
+
+  <nav class="footer-links">
+    <a href="../lite/" data-i18n="liteLink">無地圖版</a>
+    <a href="../light-rail.html" data-i18n="lightRail">輕鐵車費</a>
+  </nav>
+  <p class="note" data-i18n="source">資料：港鐵官方 Open Data</p>
+  <div id="mapTip" class="map-tip"></div>
+</main>
+<script>window.DATA_BASE='../data/';window.HAS_MAP=true;</script>
+<script src="../assets/stations.js"></script>
+<script src="../assets/app.js"></script>
+<script src="../assets/map.js"></script>
+</body>
+</html>

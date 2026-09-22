@@ -1,1 +1,9 @@
-{"name":"MTR Fare Lite","short_name":"MTR Fare","start_url":"./","display":"standalone","background_color":"#07111f","theme_color":"#111827","lang":"zh-Hant","description":"Low-data Hong Kong MTR fare checker"}
+{
+  "name": "MTR FARE — Low Data",
+  "short_name": "MTR FARE",
+  "start_url": "./map/",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#f4f7fb",
+  "lang": "zh-Hant"
+}

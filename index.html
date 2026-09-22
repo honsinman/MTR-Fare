@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#111827" />
+<meta name="description" content="Low-data Hong Kong MTR, Airport Express, Light Rail and MTR Bus fare checker." />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="stylesheet" href="styles.css" />
+<title>MTR Fare Lite</title>
+</head>
+<body>
+<header class="hero">
+  <div class="brand-row">
+    <div class="brand-mark" aria-hidden="true">M</div>
+    <div><h1>MTR Fare Lite</h1><p>港鐵・機場快綫・輕鐵・港鐵巴士低數據車費查詢</p></div>
+  </div>
+  <div class="status-row">
+    <span id="dataStatus" class="status-pill">資料：檢查中…</span>
+    <button id="syncBtn" class="ghost-btn">更新官方資料</button>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="交通模式">
+  <button class="tab active" data-page="rail">MTR + AEL</button>
+  <button class="tab" data-page="lightRail">Light Rail</button>
+  <button class="tab" data-page="bus">MTR Bus</button>
+  <button class="tab" data-page="about">資料 / Data</button>
+</nav>
+
+<main>
+<section id="rail" class="page active">
+  <div class="glass card planner-card">
+    <div class="planner-head"><div><span class="eyebrow">FARE CHECKER</span><h2>選擇起點與終點</h2></div><button id="swapBtn" class="round-btn" title="對調">⇄</button></div>
+    <div class="selector-grid">
+      <div class="station-picker" id="fromPicker">
+        <label>起點 From</label>
+        <select id="fromLine" class="line-select"></select>
+        <select id="fromStation"></select>
+      </div>
+      <div class="station-picker" id="toPicker">
+        <label>終點 To</label>
+        <select id="toLine" class="line-select"></select>
+        <select id="toStation"></select>
+      </div>
+    </div>
+    <div class="fare-options">
+      <label>票種 / Fare type</label>
+      <select id="fareType">
+        <option value="OCT_ADT_FARE">成人八達通 / Adult Octopus</option>
+        <option value="OCT_CON_CHILD_FARE">小童八達通 / Child Octopus</option>
+        <option value="OCT_STD_FARE">學生八達通 / Student Octopus</option>
+        <option value="SINGLE_ADT_FARE">成人單程票 / Adult Single Journey</option>
+        <option value="OCT_JOYYOU_SIXTY_FARE">樂悠卡 60-64 / JoyYou 60-64</option>
+        <option value="OCT_CON_PWD_FARE">合資格殘疾人士 / Eligible PWD</option>
+      </select>
+      <button id="calcBtn" class="primary-btn">計算車費</button>
+    </div>
+  </div>
+
+  <div id="resultCard" class="result-card hidden" aria-live="polite"></div>
+
+  <section class="map-section">
+    <div class="section-title"><div><span class="eyebrow">CLICKABLE SCHEMATIC</span><h2>點擊車站選擇</h2></div><span class="hint">第 1 點＝起點；第 2 點＝終點</span></div>
+    <div id="networkMap" class="network-map"></div>
+  </section>
+</section>
+
+<section id="lightRail" class="page">
+  <div class="glass card">
+    <span class="eyebrow lr">LIGHT RAIL</span><h2>輕鐵車費</h2>
+    <p class="muted">使用港鐵官方 Light Rail fare CSV，本頁獨立載入。</p>
+    <div class="selector-grid single">
+      <div class="station-picker"><label>起點</label><select id="lrFrom"></select></div>
+      <div class="station-picker"><label>終點</label><select id="lrTo"></select></div>
+    </div>
+    <div class="fare-options"><select id="lrFareType"><option value="OCT_ADT_FARE">成人八達通</option><option value="OCT_CON_FARE">優惠八達通</option><option value="SINGLE_ADT_FARE">成人單程票</option><option value="SINGLE_CON_FARE">優惠單程票</option></select><button id="lrCalcBtn" class="primary-btn lr-bg">計算輕鐵車費</button></div>
+  </div>
+  <div id="lrResult" class="result-card hidden"></div>
+  <div id="lrRoutes" class="line-cards"></div>
+</section>
+
+<section id="bus" class="page">
+  <div class="glass card">
+    <span class="eyebrow bus">MTR BUS</span><h2>港鐵巴士 / 接駁巴士</h2>
+    <p class="muted">按官方 MTR Bus route、stop、fare CSV 顯示；票價一般按路線查詢。</p>
+    <div class="selector-grid single"><div class="station-picker"><label>路線 Route</label><select id="busRoute"></select></div><div class="station-picker"><label>方向 / 資訊</label><select id="busDirection"></select></div></div>
+    <button id="busCalcBtn" class="primary-btn bus-bg">顯示車費與站點</button>
+  </div>
+  <div id="busResult" class="result-card hidden"></div>
+</section>
+
+<section id="about" class="page">
+  <div class="glass card prose">
+    <span class="eyebrow">LOW-DATA DESIGN</span><h2>資料與流量</h2>
+    <p>本 app 不使用地圖圖磚、廣告 SDK、analytics 或外部字體。車費資料只在首次使用／手動更新時同步，之後儲存在手機 Cache Storage。</p>
+    <div class="metric-grid"><div><strong>≈ 120–220 KB</strong><span>App shell 首次下載（視伺服器 gzip）</span></div><div><strong>≈ 0 KB</strong><span>每次本機查價（資料已快取後）</span></div><div><strong>≈ 0.3–1.2 MB</strong><span>完整官方資料同步估算*</span></div></div>
+    <p class="fine">* 實際流量取決於官方 CSV 當月大小、HTTP 壓縮及瀏覽器快取。Heavy-rail fare matrix 佔大部分。此頁會在同步後顯示本裝置實際已下載的字節數。</p>
+    <div id="byteStats" class="data-box"></div>
+    <h3>AEL 免費 MTR 接駁規則</h3>
+    <p>同一合資格付款工具於香港、九龍或青衣轉乘；一般須在到達 AEL 後 1 小時內轉乘。免費接駁不包括 Light Rail、MTR Bus 及東鐵綫頭等。只適用於緊接 AEL 前／後的一程 MTR；MTR → AEL 時較低的一程免費。</p>
+    <h3>官方資料來源</h3>
+    <ul><li>MTR routes & fares open data (DATA.GOV.HK / MTR Corporation)</li><li>MTR / Airport Express fare and complimentary connection rules</li></ul>
+  </div>
+</section>
+</main>
+<footer>Unofficial fare helper · 資料以港鐵最終收費為準 · <span id="buildDate"></span></footer>
+<script src="app.js"></script>
+</body></html>

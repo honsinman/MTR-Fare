@@ -1,0 +1,41 @@
+name: Build local MTR database
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['data/**','assets/mtr-system-map.pdf','assets/mtr-system-map.png']
+  workflow_dispatch:
+  schedule:
+    - cron: '15 3 5 * *'
+permissions:
+  contents: write
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download official snapshots into this repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p data/raw assets
+          base='https://opendata.mtr.com.hk/data'
+          for f in mtr_lines_fares.csv airport_express_fares.csv mtr_lines_and_stations.csv light_rail_fares.csv light_rail_routes_and_stops.csv mtr_bus_fares.csv mtr_bus_routes.csv mtr_bus_stops.csv; do
+            curl -fL --retry 3 "$base/$f" -o "data/raw/$f"
+          done
+          curl -fL --retry 3 'https://www.mtr.com.hk/archive/en/services/routemap.pdf' -o assets/mtr-system-map.pdf
+      - name: Render exact official PDF artwork for clickable map
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq poppler-utils
+          pdftoppm -singlefile -png -r 120 assets/mtr-system-map.pdf assets/mtr-system-map >/dev/null
+      - name: Build one local JSON database containing all stored fare tables
+        run: python scripts/build_db.py
+      - name: Commit database snapshot and official map locally
+        shell: bash
+        run: |
+          git config user.name 'mtr-fare-db-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add data assets/mtr-system-map.pdf assets/mtr-system-map.png
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Update local MTR fare database and official map [skip ci]'
+          git push

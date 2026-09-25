@@ -1,4 +1,4 @@
-name: Build local fare databases and deploy Pages
+name: Build local MTR fare databases and deploy Pages
 on:
   push:
     branches: [main, master]
@@ -6,9 +6,9 @@ on:
       - 'data/raw/**'
       - 'data/mtr.json'
       - 'data/light-rail.json'
-      - 'data/mtr-bus.json'
       - 'assets/mtr-system-map.pdf'
       - 'assets/mtr-system-map.png'
+      - 'assets/map-hotspots.js'
   workflow_dispatch:
   schedule:
     - cron: '15 3 5 * *'
@@ -27,13 +27,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download official MTR CSV snapshots and exact route-map PDF
+      - name: Download official MTR snapshots into this repository
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p data/raw assets
           base='https://opendata.mtr.com.hk/data'
-          files=(mtr_lines_fares.csv airport_express_fares.csv mtr_lines_and_stations.csv light_rail_fares.csv light_rail_routes_and_stops.csv mtr_bus_fares.csv mtr_bus_routes.csv mtr_bus_stops.csv)
+          files=(mtr_lines_fares.csv airport_express_fares.csv mtr_lines_and_stations.csv light_rail_fares.csv light_rail_routes_and_stops.csv)
           for f in "${files[@]}"; do
             echo "Downloading $f"
             curl --fail --location --retry 4 --retry-all-errors --connect-timeout 20 "$base/$f" -o "data/raw/$f"
@@ -41,21 +41,21 @@ jobs:
           done
           curl --fail --location --retry 4 --retry-all-errors --connect-timeout 20 'https://www.mtr.com.hk/archive/en/services/routemap.pdf' -o assets/mtr-system-map.pdf
           test -s assets/mtr-system-map.pdf
-      - name: Build compact local databases containing all fare columns
+      - name: Build local databases with all official fare columns
         run: python3 scripts/build_db.py
-      - name: Render the exact official PDF page for the clickable map
+      - name: Build exact official map image and station click layer
         shell: bash
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq poppler-utils
-          pdftoppm -singlefile -png -r 144 assets/mtr-system-map.pdf assets/mtr-system-map >/dev/null
+          python3 -m pip install --quiet PyMuPDF
+          python3 scripts/build_map_assets.py
           test -s assets/mtr-system-map.png
-      - name: Save database snapshots in this GitHub repository
+          test -s assets/map-hotspots.js
+      - name: Commit the stored database and official map snapshots
         shell: bash
         run: |
           git config user.name 'mtr-fare-db-bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add data/raw data/mtr.json data/light-rail.json data/mtr-bus.json assets/mtr-system-map.pdf assets/mtr-system-map.png
+          git add data/raw data/mtr.json data/light-rail.json assets/mtr-system-map.pdf assets/mtr-system-map.png assets/map-hotspots.js
           if ! git diff --cached --quiet; then
             git commit -m 'Update local MTR fare databases and official map [skip ci]'
             git push
@@ -64,6 +64,6 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-      - name: Deploy working site only after databases have been built
+      - name: Deploy only after local databases are ready
         id: deployment
         uses: actions/deploy-pages@v4

@@ -40,3 +40,12 @@ outlines instead of searchable PDF text. PyMuPDF can therefore render the exact
 map correctly while finding zero station names. The map builder now keeps the
 checked-in 98-point hotspot layer whenever PDF text extraction yields fewer than
 80 reliable station positions, instead of aborting the entire Pages deployment.
+
+## V6.2 fixes
+
+- Airport/AWE to the MTR network now shows all three Airport Express city-terminal Adult Octopus choices: Tsing Yi $73, Kowloon $105, Hong Kong $120. Airport ↔ AsiaWorld-Expo remains $6.5.
+- Fare-search data meter now shows the payload for the most recent fare lookup rather than accumulating the whole database across many searches. `重計 / Recount` resets the current-session measurement.
+- Heavy-rail and Light Rail lookups use compact per-origin Adult-Octopus shards; the complete official tables with every fare column remain stored in `data/mtr.json` and `data/light-rail.json`.
+- Light Rail stop IDs are normalised (e.g. `001` = `1`) and fare-column detection accepts multiple official naming styles.
+- The service-worker cache is bumped and no longer stores failed/404 map or fare-shard responses. This clears the stale-cache condition that could show a broken map or "fare data not synced" after a successful rebuild.
+- The official route-map PNG is lazy-loaded. If that rendered image cannot load, the local official PDF is displayed directly as the fallback instead of an external website image.

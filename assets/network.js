@@ -10,6 +10,8 @@ window.MTR_LINES=[
 {id:'KTL',zh:'觀塘綫',en:'Kwun Tong Line',color:'#00AB4E',stations:[['WHA','黃埔','Whampoa'],['HOM','何文田','Ho Man Tin'],['YMT','油麻地','Yau Ma Tei'],['MOK','旺角','Mong Kok'],['PRE','太子','Prince Edward'],['SKM','石硤尾','Shek Kip Mei'],['KOT','九龍塘','Kowloon Tong'],['LOF','樂富','Lok Fu'],['WTS','黃大仙','Wong Tai Sin'],['DIH','鑽石山','Diamond Hill'],['CHH','彩虹','Choi Hung'],['KOB','九龍灣','Kowloon Bay'],['NTK','牛頭角','Ngau Tau Kok'],['KWT','觀塘','Kwun Tong'],['LAT','藍田','Lam Tin'],['YAT','油塘','Yau Tong'],['TIK','調景嶺','Tiu Keng Leng']]},
 {id:'DRL',zh:'迪士尼綫',en:'Disneyland Resort Line',color:'#F173AC',stations:[['SUN','欣澳','Sunny Bay'],['DIS','迪士尼','Disneyland Resort']]}
 ];
+// Keep Airport Express available, but do not make it the first/default line choice.
+if(window.MTR_LINES[0]?.id==='AEL') window.MTR_LINES.push(window.MTR_LINES.shift());
 window.MTR_LINE_BY_ID=Object.fromEntries(window.MTR_LINES.map(x=>[x.id,x]));
 window.MTR_STATION_LINES={};
 for(const line of window.MTR_LINES){for(const st of line.stations){(window.MTR_STATION_LINES[st[2]]??=[]).push(line.id)}}

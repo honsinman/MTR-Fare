@@ -8,7 +8,7 @@ const T={
 };
 let lang='zh';try{lang=localStorage.getItem('mtr-fare-lang')==='en'?'en':'zh'}catch{}
 let sessionRequests=0,lastLookupBytes=0,mapNext='from';
-const state={from:{line:'AEL',station:'Airport'},to:{line:'TCL',station:'Kowloon'}};
+const state={from:{line:'KTL',station:'Whampoa'},to:{line:'KTL',station:'Tiu Keng Leng'}};
 const tr=k=>T[lang][k]||k;
 function totalReq(){try{return Number(localStorage.getItem('mtr_fare_total_requests')||0)}catch{return 0}}
 function setTotalReq(n){try{localStorage.setItem('mtr_fare_total_requests',String(n))}catch{}}

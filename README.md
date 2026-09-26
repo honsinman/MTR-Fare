@@ -49,3 +49,10 @@ checked-in 98-point hotspot layer whenever PDF text extraction yields fewer than
 - Light Rail stop IDs are normalised (e.g. `001` = `1`) and fare-column detection accepts multiple official naming styles.
 - The service-worker cache is bumped and no longer stores failed/404 map or fare-shard responses. This clears the stale-cache condition that could show a broken map or "fare data not synced" after a successful rebuild.
 - The official route-map PNG is lazy-loaded. If that rendered image cannot load, the local official PDF is displayed directly as the fallback instead of an external website image.
+
+
+## V6.3 UI/map alignment changes
+- Airport Express remains selectable but is no longer the first/default line.
+- Default selectors now open on Kwun Tong Line.
+- Map click dots are centred exactly on each hotspot coordinate (no CSS offset).
+- Selector, fare, usage and map text sizes are increased while retaining the MTR ETA visual style.

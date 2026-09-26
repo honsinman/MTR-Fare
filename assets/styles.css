@@ -20,3 +20,51 @@
 .fare-value.ael-options strong{font-size:25px;line-height:1;font-weight:950;color:#111827}
 .map-pdf-fallback{display:none;width:100%;height:62vh;min-height:420px;border:0;background:#fff}
 @media(max-width:390px){.fare-value.ael-options strong{font-size:22px}.fare-value.ael-options small{font-size:11px}.recount-btn{padding:0 7px}}
+
+/* V6.3 — exact hotspot centring + larger ETA-style typography. */
+/* The coordinate itself is the station symbol centre. Never offset the visible dot. */
+.map-hit,.map-hit.node-hit{
+  width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important;
+  transform:translate(-50%,-50%)!important;
+}
+.map-hit::after,.map-hit.node-hit::after{
+  left:50%!important;top:50%!important;
+  transform:translate(-50%,-50%)!important;
+  width:12px;height:12px;
+}
+.map-hit:hover::after,.map-hit:focus-visible::after,.map-hit.selected::after{width:16px;height:16px}
+
+/* Match the original MTR ETA visual scale, but slightly larger for fare selection. */
+.low-data{font-size:17px}
+.service-tab{font-size:17px;min-height:50px}
+.section-title{font-size:23px;margin-bottom:12px}
+.side-title{font-size:16px;margin-bottom:9px}
+.field label{font-size:15px;margin-bottom:8px}
+.select-wrap,.select-wrap select{height:58px}
+.select-wrap select{font-size:20px}
+.select-wrap::after{font-size:25px}
+.calc-btn{height:58px;font-size:20px}
+.fare-kicker{font-size:16px}
+.fare-value{font-size:48px}
+.fare-msg{font-size:14px}
+.usage{font-size:15px;min-height:46px}
+.recount-btn{font-size:14px;height:31px;padding:0 11px}
+.map-heading h2{font-size:23px}
+.map-heading small{font-size:13px}
+.map-tools button{font-size:16px;height:41px}
+.source{font-size:12px}
+.fare-value.ael-options small{font-size:14px}
+.fare-value.ael-options strong{font-size:28px}
+@media(max-width:390px){
+  .low-data{font-size:16px}
+  .service-tab{font-size:16px}
+  .section-title{font-size:22px}
+  .side-title{font-size:15px}
+  .field label{font-size:14px}
+  .select-wrap select{font-size:18px!important;padding-right:30px}
+  .select-wrap.line-select select{padding-left:38px}
+  .calc-btn{font-size:19px}
+  .usage{font-size:14px}
+  .fare-value.ael-options small{font-size:13px}
+  .fare-value.ael-options strong{font-size:25px}
+}

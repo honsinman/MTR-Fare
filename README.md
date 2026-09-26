@@ -32,3 +32,11 @@ There is intentionally no separate “Open local official PDF” button.
 4. Wait for the workflow to finish before testing the final Pages URL.
 
 The workflow also runs monthly to refresh MTR open-data snapshots.
+
+## v6.1 build-and-deploy fix
+
+The current official `routemap.pdf` may expose station-name lettering as vector
+outlines instead of searchable PDF text. PyMuPDF can therefore render the exact
+map correctly while finding zero station names. The map builder now keeps the
+checked-in 98-point hotspot layer whenever PDF text extraction yields fewer than
+80 reliable station positions, instead of aborting the entire Pages deployment.

@@ -13,9 +13,6 @@ on:
       - 'assets/ael-fallback.js'
       - 'assets/fare-index.js'
       - 'assets/light-rail-stops.js'
-      - 'assets/mtr-system-map.pdf'
-      - 'assets/mtr-system-map.png'
-      - 'assets/map-hotspots.js'
   workflow_dispatch:
   schedule:
     - cron: '15 3 5 * *'
@@ -46,31 +43,16 @@ jobs:
             curl --fail --location --retry 5 --retry-all-errors --connect-timeout 25 -A 'Mozilla/5.0' "$base/$f" -o "data/raw/$f"
             test -s "data/raw/$f"
           done
-          curl --fail --location --retry 5 --retry-all-errors --connect-timeout 25 -A 'Mozilla/5.0' 'https://www.mtr.com.hk/archive/en/services/routemap.pdf' -o assets/mtr-system-map.pdf
-          test -s assets/mtr-system-map.pdf
       - name: Build local master databases and low-data per-origin shards
         run: python3 scripts/build_db.py
-      - name: Build exact official map image and station click layer
-        shell: bash
-        run: |
-          python3 -m pip install --quiet PyMuPDF
-          python3 scripts/build_map_assets.py
-          test -s assets/mtr-system-map.png
-          test -s assets/map-hotspots.js
-          python3 - <<'PY2'
-          import re
-          from pathlib import Path
-          s=Path('assets/map-hotspots.js').read_text(encoding='utf-8')
-          n=max(len(re.findall(r"['\"][^'\"]+['\"]\s*:\s*\[",s)), s.count('"cx":'))
-          print('verified hotspot count',n)
-          assert n >= 80, f'Hotspot layer incomplete: {n}'
-          PY2
+      - name: Validate exact checked-in route map and pixel-registered station buttons
+        run: python3 scripts/validate_map_hotspots.py
       - name: Store refreshed snapshots in the repository
         shell: bash
         run: |
           git config user.name 'mtr-fare-db-bot'
           git config user.email 'actions@users.noreply.github.com'
-          git add data/raw data/mtr.json data/light-rail.json data/fare data/fare-index.json data/ael-fallback.json data/light-rail-stops.json assets/ael-fallback.js assets/fare-index.js assets/light-rail-stops.js assets/mtr-system-map.pdf assets/mtr-system-map.png assets/map-hotspots.js
+          git add data/raw data/mtr.json data/light-rail.json data/fare data/fare-index.json data/ael-fallback.json data/light-rail-stops.json assets/ael-fallback.js assets/fare-index.js assets/light-rail-stops.js
           if ! git diff --cached --quiet; then
             git commit -m 'Update local MTR fare databases and official map [skip ci]'
             git push || echo 'Snapshot push was blocked; continuing Pages deployment with the freshly built local files.'

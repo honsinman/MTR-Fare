@@ -56,6 +56,14 @@ jobs:
           python3 scripts/build_map_assets.py
           test -s assets/mtr-system-map.png
           test -s assets/map-hotspots.js
+          python3 - <<'PY2'
+          import re
+          from pathlib import Path
+          s=Path('assets/map-hotspots.js').read_text(encoding='utf-8')
+          n=max(len(re.findall(r"['\"][^'\"]+['\"]\s*:\s*\[",s)), s.count('"cx":'))
+          print('verified hotspot count',n)
+          assert n >= 80, f'Hotspot layer incomplete: {n}'
+          PY2
       - name: Store refreshed snapshots in the repository
         shell: bash
         run: |

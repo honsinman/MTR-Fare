@@ -85,3 +85,49 @@
 .map-hit.station-hit:hover::after,.map-hit.station-hit:focus-visible::after,.map-hit.station-hit.selected::after{opacity:1!important;width:10px!important;height:10px!important;border-radius:999px!important;background:#fff!important;border:2px solid var(--hit)!important;box-shadow:0 0 0 2px rgba(255,216,77,.95)!important}
 .map-hit.interchange-hit:hover::after,.map-hit.interchange-hit:focus-visible::after,.map-hit.interchange-hit.selected::after{opacity:1!important;width:16px!important;height:16px!important;border-radius:999px!important;background:#fff!important;border:2px solid #111827!important;box-shadow:0 0 0 2px rgba(255,216,77,.95)!important}
 .map-hit.interchange-hit:hover::before,.map-hit.interchange-hit:focus-visible::before,.map-hit.interchange-hit.selected::before{width:18px!important;height:18px!important;background:conic-gradient(from 180deg,var(--ring-a) 0 33%,var(--ring-b) 33% 66%,var(--ring-c) 66% 100%)!important;border-radius:999px!important;box-shadow:0 0 0 1px rgba(17,24,39,.18)!important}
+
+/* V6.5 — exact-pixel map buttons on the checked-in official route-map figure. */
+.map-stage{position:relative!important;transform-origin:top left!important;min-width:0!important}
+.map-stage img{display:block!important;width:100%!important;height:100%!important;object-fit:fill!important;user-select:none!important;-webkit-user-drag:none!important}
+.hotspots{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;pointer-events:none!important}
+.map-hit,.map-hit.node-hit{
+  position:absolute!important;
+  box-sizing:border-box!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  padding:0!important;
+  margin:0!important;
+  border:1.5px solid rgba(0,116,255,.88)!important;
+  background:rgba(62,149,255,.13)!important;
+  box-shadow:none!important;
+  transform:translate(-50%,-50%) rotate(var(--station-angle,0deg))!important;
+  transform-origin:center!important;
+  pointer-events:auto!important;
+  z-index:4!important;
+  cursor:pointer!important;
+  outline:none!important;
+  overflow:visible!important;
+}
+.map-hit.station-hit{border-radius:50%!important}
+.map-hit.interchange-hit{border-radius:999px!important}
+.map-hit::before{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:max(30px,300%)!important;
+  height:max(30px,300%)!important;
+  transform:translate(-50%,-50%)!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border-radius:999px!important;
+}
+.map-hit::after{content:none!important}
+.map-hit:hover,.map-hit:focus-visible,.map-hit.selected{
+  border-color:#0b3f91!important;
+  background:rgba(255,216,77,.58)!important;
+  box-shadow:0 0 0 2px rgba(255,216,77,.55)!important;
+}

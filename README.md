@@ -56,3 +56,11 @@ checked-in 98-point hotspot layer whenever PDF text extraction yields fewer than
 - Default selectors now open on Kwun Tong Line.
 - Map click dots are centred exactly on each hotspot coordinate (no CSS offset).
 - Selector, fare, usage and map text sizes are increased while retaining the MTR ETA visual style.
+
+## V6.5 exact-pixel MTR map buttons
+
+The MTR map now uses the checked-in `assets/mtr-system-map.png` route-map figure directly. It is not redrawn by the app or rebuilt from PDF.
+
+`assets/map-hotspots.js` contains 98 station hit targets registered against the 2048×1379 native image. Regular stations use the detected station-circle pixel bounds; interchange stations use their larger pill/combined symbol bounds. Hong Kong, Central and Admiralty are registered separately because their dark station outlines are connected in the source image.
+
+`python3 scripts/validate_map_hotspots.py` verifies the exact map SHA-256, native pixel size, all 98 station names, and hotspot geometry. The Pages workflow now validates this checked-in map instead of downloading/re-rendering another map, preventing coordinate drift.

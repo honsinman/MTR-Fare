@@ -71,13 +71,18 @@ function build(){
     b.style.left=pctX(p.px);
     b.style.top=pctY(p.py);
 
-    // Visible button is exactly 1/6 of the V6.6 button size.
-    // V6.6 used 0.5 × the registered map symbol, therefore this version uses
-    // (0.5 / 6) = 1/12 × the registered symbol. Because width/height are stored
-    // as percentages of the native map, the button still scales with map zoom.
-    const VISUAL_SCALE=1/12;
-    b.style.width=pctW((Number(p.w)||15)*VISUAL_SCALE);
-    b.style.height=pctH((Number(p.h)||15)*VISUAL_SCALE);
+    // V6.8: visible button follows the exact registered map-symbol footprint.
+    // The previous CSS still contained fixed 28/36 px !important rules, which
+    // is why V6.7 looked large even though JS requested a much smaller size.
+    // These percentages are tied to the native 2048×1379 map, so the button
+    // now scales with the route map at every zoom level.
+    const VISUAL_SCALE=1;
+    const visualW=pctW((Number(p.w)||15)*VISUAL_SCALE);
+    const visualH=pctH((Number(p.h)||15)*VISUAL_SCALE);
+    b.style.setProperty('--visual-w',visualW);
+    b.style.setProperty('--visual-h',visualH);
+    b.style.width=visualW;
+    b.style.height=visualH;
     b.style.setProperty('--station-angle',(Number(p.angle)||0)+'deg');
     b.style.setProperty('--station-color',stationPrimary(station));
     b.style.setProperty('--station-fill',stationFill(station));

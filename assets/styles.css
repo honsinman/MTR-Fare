@@ -208,3 +208,40 @@
   box-shadow:0 0 0 .25px #fff,0 0 0 .5px var(--station-color,#111827)!important;
 }
 \n\n/* V6.8 — true map-scale station buttons.\n   Fix: legacy V6.4 fixed 28/36 px !important sizes were overriding V6.7 JS.\n   The visible footprint now comes from each pixel-registered station symbol. */\n.map-hit,.map-hit.node-hit,.map-hit.station-hit,.map-hit.interchange-hit{\n  width:var(--visual-w)!important;\n  height:var(--visual-h)!important;\n  min-width:0!important;\n  min-height:0!important;\n  max-width:none!important;\n  max-height:none!important;\n  border-width:.45px!important;\n  box-shadow:0 0 0 .15px rgba(255,255,255,.9)!important;\n}\n.map-hit.from-selected,.map-hit.from-selected:hover,.map-hit.from-selected:focus-visible{\n  box-shadow:0 0 0 .3px #fff,0 0 0 .65px rgba(227,27,35,.62)!important;\n}\n.map-hit.to-selected,.map-hit.to-selected:hover,.map-hit.to-selected:focus-visible{\n  box-shadow:0 0 0 .3px #fff,0 0 0 .65px rgba(0,166,81,.62)!important;\n}\n.map-hit:not(.from-selected):not(.to-selected):hover,\n.map-hit:not(.from-selected):not(.to-selected):focus-visible{\n  box-shadow:0 0 0 .25px #fff,0 0 0 .5px var(--station-color,#111827)!important;\n}\n
+/* V6.9 — visible map buttons are 1/6 of V6.8; pinch-to-zoom replaces +/- controls. */
+.map-tools{display:none!important}
+.map-viewport{
+  touch-action:none!important;
+  cursor:grab;
+  overscroll-behavior:contain!important;
+  -webkit-user-select:none;
+  user-select:none;
+}
+.map-viewport:active{cursor:grabbing}
+.map-stage,.map-stage img,.hotspots{touch-action:none!important}
+.map-hit,.map-hit.node-hit,.map-hit.station-hit,.map-hit.interchange-hit{
+  width:var(--visual-w)!important;
+  height:var(--visual-h)!important;
+  min-width:0!important;
+  min-height:0!important;
+  border-width:.18px!important;
+  box-shadow:none!important;
+}
+/* Visual dot stays tiny; invisible hit area remains finger-friendly. */
+.map-hit::before{
+  width:20px!important;
+  height:20px!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.map-hit.from-selected,.map-hit.from-selected:hover,.map-hit.from-selected:focus-visible{
+  box-shadow:0 0 0 .18px #fff,0 0 0 .34px rgba(227,27,35,.62)!important;
+}
+.map-hit.to-selected,.map-hit.to-selected:hover,.map-hit.to-selected:focus-visible{
+  box-shadow:0 0 0 .18px #fff,0 0 0 .34px rgba(0,166,81,.62)!important;
+}
+.map-hit:not(.from-selected):not(.to-selected):hover,
+.map-hit:not(.from-selected):not(.to-selected):focus-visible{
+  box-shadow:0 0 0 .15px #fff,0 0 0 .28px var(--station-color,#111827)!important;
+}

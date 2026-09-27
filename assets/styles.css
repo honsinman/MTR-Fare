@@ -131,3 +131,62 @@
   background:rgba(255,216,77,.58)!important;
   box-shadow:0 0 0 2px rgba(255,216,77,.55)!important;
 }
+
+
+/* V6.6 — half-size scale-aware map buttons + original line colours + start/end states. */
+.map-hit,.map-hit.node-hit{
+  position:absolute!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  box-sizing:border-box!important;
+  padding:0!important;
+  margin:0!important;
+  transform:translate(-50%,-50%) rotate(var(--station-angle,0deg))!important;
+  transform-origin:center!important;
+  border:1px solid var(--station-color,#111827)!important;
+  background:var(--station-fill,var(--station-color,#111827))!important;
+  border-radius:50%!important;
+  box-shadow:0 0 0 .6px rgba(255,255,255,.92)!important;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  z-index:4!important;
+  overflow:visible!important;
+  opacity:.92!important;
+}
+.map-hit.interchange-hit{border-radius:999px!important}
+/* Keep an invisible mobile-friendly tap target without changing the visible button size. */
+.map-hit::before{
+  content:""!important;
+  position:absolute!important;
+  left:50%!important;
+  top:50%!important;
+  width:max(26px,420%)!important;
+  height:max(26px,420%)!important;
+  transform:translate(-50%,-50%)!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border-radius:999px!important;
+}
+.map-hit::after{content:none!important}
+/* 起點 = filled red; 終點 = filled green. */
+.map-hit.from-selected,.map-hit.from-selected:hover,.map-hit.from-selected:focus-visible{
+  background:#e31b23!important;
+  border-color:#e31b23!important;
+  box-shadow:0 0 0 1.5px #fff,0 0 0 3px rgba(227,27,35,.58)!important;
+  opacity:1!important;
+}
+.map-hit.to-selected,.map-hit.to-selected:hover,.map-hit.to-selected:focus-visible{
+  background:#00a651!important;
+  border-color:#00a651!important;
+  box-shadow:0 0 0 1.5px #fff,0 0 0 3px rgba(0,166,81,.58)!important;
+  opacity:1!important;
+}
+/* Hover before selection keeps the station's original MTR line colour. */
+.map-hit:not(.from-selected):not(.to-selected):hover,
+.map-hit:not(.from-selected):not(.to-selected):focus-visible{
+  filter:brightness(1.08) saturate(1.15)!important;
+  box-shadow:0 0 0 1px #fff,0 0 0 2px var(--station-color,#111827)!important;
+}

@@ -12,8 +12,22 @@ let nh=Number(meta.height)||1379;
 
 function pctX(px){return (Number(px)/nw*100)+'%'}
 function pctY(py){return (Number(py)/nh*100)+'%'}
-function pctW(w){return (Number(w)/nw*100)+'%'}
-function pctH(h){return (Number(h)/nh*100)+'%'}
+function pctW(px){return (Number(px)/nw*100)+'%'}
+function pctH(px){return (Number(px)/nh*100)+'%'}
+
+function stationLines(name){return window.MTR_STATION_LINES?.[name]||[]}
+function lineColor(id){return window.MTR_LINE_BY_ID?.[id]?.color||null}
+function stationColors(name){return stationLines(name).map(lineColor).filter(Boolean)}
+function stationFill(name){
+  const colors=[...new Set(stationColors(name))];
+  if(!colors.length)return '#111827';
+  if(colors.length===1)return colors[0];
+  const step=100/colors.length;
+  const stops=[];
+  colors.forEach((c,i)=>{stops.push(`${c} ${i*step}% ${(i+1)*step}%`)});
+  return `conic-gradient(from 0deg,${stops.join(',')})`;
+}
+function stationPrimary(name){return stationColors(name)[0]||'#111827'}
 
 function apply(){
   const w=nw*zoom,h=nh*zoom;
@@ -35,14 +49,18 @@ function fit(){
 function selected(){
   const s=window.MTR_UI?.selections||{};
   layer.querySelectorAll('.map-hit').forEach(b=>{
-    b.classList.toggle('selected',b.dataset.station===s.from||b.dataset.station===s.to);
+    const isFrom=b.dataset.station===s.from;
+    const isTo=b.dataset.station===s.to;
+    b.classList.toggle('from-selected',isFrom);
+    b.classList.toggle('to-selected',isTo&&!isFrom);
+    b.classList.toggle('selected',isFrom||isTo);
+    b.setAttribute('aria-pressed',(isFrom||isTo)?'true':'false');
   });
 }
 
 function build(){
   layer.innerHTML='';
-  const entries=Object.entries(window.MTR_MAP_POINTS||{});
-  for(const [station,p] of entries){
+  for(const [station,p] of Object.entries(window.MTR_MAP_POINTS||{})){
     if(!p||p.px==null||p.py==null)continue;
     const b=document.createElement('button');
     b.type='button';
@@ -52,9 +70,15 @@ function build(){
     b.setAttribute('aria-label',station);
     b.style.left=pctX(p.px);
     b.style.top=pctY(p.py);
-    b.style.width=pctW(p.w||15);
-    b.style.height=pctH(p.h||15);
+
+    // Visible button is exactly half of the registered station-symbol size.
+    // Width/height remain percentages of the native image, so they grow/shrink
+    // automatically with the map zoom/scale.
+    b.style.width=pctW((Number(p.w)||15)*0.5);
+    b.style.height=pctH((Number(p.h)||15)*0.5);
     b.style.setProperty('--station-angle',(Number(p.angle)||0)+'deg');
+    b.style.setProperty('--station-color',stationPrimary(station));
+    b.style.setProperty('--station-fill',stationFill(station));
     b.addEventListener('click',()=>window.setStationFromMap?.(station));
     layer.appendChild(b);
   }
@@ -62,10 +86,7 @@ function build(){
 }
 
 img.addEventListener('load',()=>{
-  if(img.naturalWidth&&img.naturalHeight){
-    nw=img.naturalWidth;
-    nh=img.naturalHeight;
-  }
+  if(img.naturalWidth&&img.naturalHeight){nw=img.naturalWidth;nh=img.naturalHeight}
   build();
   fit();
 });
@@ -83,7 +104,5 @@ document.getElementById('zoomIn')?.addEventListener('click',()=>{zoom=Math.min(2
 document.getElementById('zoomOut')?.addEventListener('click',()=>{zoom=Math.max(.18,zoom-.15);apply()});
 document.getElementById('zoomFit')?.addEventListener('click',fit);
 
-if(img.complete&&img.naturalWidth){
-  nw=img.naturalWidth;nh=img.naturalHeight;build();fit();
-}
+if(img.complete&&img.naturalWidth){nw=img.naturalWidth;nh=img.naturalHeight;build();fit()}
 })();

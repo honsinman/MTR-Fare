@@ -190,3 +190,20 @@
   filter:brightness(1.08) saturate(1.15)!important;
   box-shadow:0 0 0 1px #fff,0 0 0 2px var(--station-color,#111827)!important;
 }
+
+
+/* V6.7 — map button visual footprint = 1/6 of V6.6; tap target remains usable. */
+.map-hit,.map-hit.node-hit{
+  border-width:.35px!important;
+  box-shadow:0 0 0 .18px rgba(255,255,255,.92)!important;
+}
+.map-hit.from-selected,.map-hit.from-selected:hover,.map-hit.from-selected:focus-visible{
+  box-shadow:0 0 0 .35px #fff,0 0 0 .75px rgba(227,27,35,.58)!important;
+}
+.map-hit.to-selected,.map-hit.to-selected:hover,.map-hit.to-selected:focus-visible{
+  box-shadow:0 0 0 .35px #fff,0 0 0 .75px rgba(0,166,81,.58)!important;
+}
+.map-hit:not(.from-selected):not(.to-selected):hover,
+.map-hit:not(.from-selected):not(.to-selected):focus-visible{
+  box-shadow:0 0 0 .25px #fff,0 0 0 .5px var(--station-color,#111827)!important;
+}

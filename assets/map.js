@@ -71,11 +71,13 @@ function build(){
     b.style.left=pctX(p.px);
     b.style.top=pctY(p.py);
 
-    // Visible button is exactly half of the registered station-symbol size.
-    // Width/height remain percentages of the native image, so they grow/shrink
-    // automatically with the map zoom/scale.
-    b.style.width=pctW((Number(p.w)||15)*0.5);
-    b.style.height=pctH((Number(p.h)||15)*0.5);
+    // Visible button is exactly 1/6 of the V6.6 button size.
+    // V6.6 used 0.5 × the registered map symbol, therefore this version uses
+    // (0.5 / 6) = 1/12 × the registered symbol. Because width/height are stored
+    // as percentages of the native map, the button still scales with map zoom.
+    const VISUAL_SCALE=1/12;
+    b.style.width=pctW((Number(p.w)||15)*VISUAL_SCALE);
+    b.style.height=pctH((Number(p.h)||15)*VISUAL_SCALE);
     b.style.setProperty('--station-angle',(Number(p.angle)||0)+'deg');
     b.style.setProperty('--station-color',stationPrimary(station));
     b.style.setProperty('--station-fill',stationFill(station));
